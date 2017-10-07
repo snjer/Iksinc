@@ -2,11 +2,11 @@
 
 udpthread::udpthread(): flag(true)
 {
-    address = QHostAddress(192.168.1.166);
+    address = QHostAddress("192.168.1.166");
     port = 62618;
     udp = new QUdpSocket;
-    udpSocket->bind(QHostAddress::Any, port);
-    connect(udpSocket, SIGNAL(readyRead()),
+    udp->bind(QHostAddress::Any, port);
+    connect(udp, SIGNAL(readyRead()),
        this, SLOT(recv()),Qt::DirectConnection);
 }
 
@@ -129,8 +129,8 @@ void udpthread::recv()
     while (udp->hasPendingDatagrams())
     {
         QByteArray datagram;
-        datagram.resize(udpSocket->pendingDatagramSize());
-        udpSocket->readDatagram(datagram.data(), datagram.size());
+        datagram.resize(udp->pendingDatagramSize());
+        udp->readDatagram(datagram.data(), datagram.size());
         recv_data += datagram;
     }
 }
@@ -140,7 +140,7 @@ void udpthread::stop()
     flag = false;
 }
 
-bool udpthread::checkdata(QByteArray &data)
+bool udpthread::checkdata(QByteArray data)
 {
     return true;
 }

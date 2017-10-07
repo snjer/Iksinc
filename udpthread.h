@@ -3,6 +3,7 @@
 #include <QThread>
 #include <QByteArray>
 #include <QtNetwork/QUdpSocket>
+#include <QtNetwork/QHostAddress>
 
 class udpthread: public QThread
 {
@@ -41,7 +42,7 @@ private:
     QHostAddress address;
     QByteArray recv_data;
 
-    bool checkdata(QByteArray &data);
+    bool checkdata(QByteArray data);
 };
 
 #endif // UDPTHREAD_H

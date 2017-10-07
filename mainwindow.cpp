@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+#include <QtNetwork/QHostAddress>
 #include <math.h>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -15,8 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     for(int i = 0; i < ADC_CHANNEL_NUM; i++) {
         file_index[i] = 0;
         adc_channel[i].resize(3 * WAVE_X_LENGTH);
-        for (int j = 0; j < 3 * WAVE_X_LENGTH; j++)
-            adc_channel[i][j] = 3 * cos(j);
+//        for (int j = 0; j < 3 * WAVE_X_LENGTH; j++)
+//            adc_channel[i][j] = 3 * cos(j);
 //        adc_channel[i].fill(i / 2.0, 3 * WAVE_X_LENGTH);
         //向绘图区域QCustomPlot(从widget提升来的)添加一条曲线
         ui->wave_wdt->addGraph();
@@ -54,11 +55,26 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->adc3_y_offset->setTickPosition(QSlider::TicksRight);
     ui->adc4_y_offset->setTickPosition(QSlider::TicksRight);
     ui->adc5_y_offset->setTickPosition(QSlider::TicksRight);
-
+    /* 连接各UDP接收数据处理函数 */
     connect(&udp, SIGNAL(adcdata(unsigned short,unsigned short,uint,QByteArray)),
             this, SLOT(on_adc_data(unsigned short,unsigned short,uint,QByteArray)));
+    connect(&udp, SIGNAL(broadinfo(unsigned short,QByteArray)),
+            this, SLOT(on_broadinfo(unsigned short,QByteArray)));
+    connect(&udp, SIGNAL(configinfo(unsigned short)),
+            this, SLOT(on_configinfo(unsigned short)));
+    connect(&udp, SIGNAL(sddata(unsigned short,unsigned short,unsigned short,QByteArray)),
+            this, SLOT(on_sddata(unsigned short,unsigned short,unsigned short,QByteArray)));
+    connect(&udp, SIGNAL(fireware_write_start_ack(unsigned short)),
+            this, SLOT(on_fireware_write_start_ack(unsigned short)));
+    connect(&udp, SIGNAL(fireware_next_package_request(unsigned short,uint)),
+            this, SLOT(on_fireware_next_package_request(unsigned short,uint)));
+    connect(&udp, SIGNAL(fireware_repeat_package_request(unsigned short,uint)),
+            this, SLOT(on_fireware_repeat_package_request(unsigned short,uint)));
+    connect(&udp, SIGNAL(error(unsigned short,unsigned short)),
+            this, SLOT(on_error(unsigned short,unsigned short)));
+
       //已设置默认值192.168.1.66：2:618
-//    udp.set_host_ip(QHostAddress(192.168.1.166));
+//    udp.set_host_ip(QHostAddress("192.168.1.166"));
 //    udp.set_port(62618);
     udp.start();
 //    channel_flag = 0xFF;
@@ -135,7 +151,7 @@ void MainWindow::file_write(unsigned char broadid, unsigned char channel, short 
     if (channel >= ADC_CHANNEL_NUM && num <= 0)
         return;
     if (!file[channel].isOpen()) {
-        file[channel].setFileName("broad_%1_%2_%3").arg(broadid).arg(channel).arg(file_index[channel]);
+        file[channel].setFileName(QString("broad_%1_%2_%3").arg(broadid).arg(channel).arg(file_index[channel]));
         if (!file[channel].open(QIODevice::WriteOnly)) {
             QMessageBox msg(QMessageBox::Warning, "Error", "Create file failed");
             msg.exec();
@@ -294,11 +310,47 @@ void MainWindow::on_rate_dial_valueChanged(int value)
 {
 
 }
-
+/* 处理adc通道实时数据 */
 void MainWindow::on_adc_data(unsigned short broadid, unsigned short channel,
                  unsigned int index, QByteArray data)
 {
     file_write(broadid, channel, (short *)data.data(), data.size() / 2);
     wave_push_back(adc_channel[channel], (short *)data.data(), data.size() / 2);
     paintwave();
+}
+
+void MainWindow::on_broadinfo(unsigned short broadid, QByteArray info)
+{
+
+}
+
+void MainWindow::on_configinfo(unsigned short broadid)
+{
+
+}
+
+void MainWindow::on_sddata(unsigned short broadid, unsigned short parameter,
+            unsigned short pagecnt, QByteArray data)
+{
+
+}
+
+void MainWindow::on_fireware_write_start_ack(unsigned short broadid)
+{
+
+}
+
+void MainWindow::on_fireware_next_package_request(unsigned short broadid, unsigned int index)
+{
+
+}
+
+void MainWindow::on_fireware_repeat_package_request(unsigned short broadid, unsigned int index)
+{
+
+}
+
+void MainWindow::on_error(unsigned short broadid, unsigned short cmd)
+{
+
 }

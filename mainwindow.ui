@@ -118,15 +118,15 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QSlider" name="adc5_y_offset">
+      <item row="1" column="1">
+       <widget class="QSlider" name="adc1_y_offset">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QSlider" name="adc1_y_offset">
+      <item row="5" column="1">
+       <widget class="QSlider" name="adc5_y_offset">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>

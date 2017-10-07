@@ -54,8 +54,17 @@ private slots:
 
     void on_rate_dial_valueChanged(int value);
 
+    /* 处理UDP接收到的数据 */
     void on_adc_data(unsigned short broadid, unsigned short channel,
                      unsigned int index, QByteArray data);
+    void on_broadinfo(unsigned short broadid, QByteArray info);
+    void on_configinfo(unsigned short broadid);
+    void on_sddata(unsigned short broadid, unsigned short parameter,
+                unsigned short pagecnt, QByteArray data);
+    void on_fireware_write_start_ack(unsigned short broadid);
+    void on_fireware_next_package_request(unsigned short broadid, unsigned int index);
+    void on_fireware_repeat_package_request(unsigned short broadid, unsigned int index);
+    void on_error(unsigned short broadid, unsigned short cmd);
 
 signals:
     void paintwave(void);   //画波形图信号
